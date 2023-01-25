@@ -1,0 +1,93 @@
+parameters:
+
+  - name: curlUserPAT
+    displayName: ADO User PAT
+    type: string
+
+  - name: curlOrg
+    displayName: ADO destiny organization name
+    type: string
+    default: TaxCollection
+
+  - name: curlOrgProject
+    displayName: ADO target project name
+    type: string
+    default: POCClonandGO
+
+  - name: curlPipeFolder
+    displayName: Pipeline target folder name (use "null" for root folder)
+    type: string
+    default: null
+
+  - name: curlPipeName
+    displayName: Pipeline target name
+    type: string
+    default: pipeline-mig-poc
+
+  - name: curlPipePath
+    displayName: Pipeline target source YAML file path
+    type: string
+    default: /Create-SQLServer.yml
+
+  - name: curlPipePathRepoId
+    displayName: Pipeline target source repository ID
+    type: string
+    default: afac0d26-7f7c-43eb-9f9b-c306a42315a9
+
+  - name: curlPipePathRepoName
+    displayName: Pipeline target source repository name
+    type: string
+    default: POCClonandGO
+
+  - name: curlPipePathRepoType
+    displayName: Pipeline target source Type
+    type: string
+    values:
+      - azureReposGit
+      - git
+      - github
+
+variables:
+
+#  - name: System.Debug
+#    value: true
+
+  - name: curlheaderURL
+    value: "https://dev.azure.com/${{ parameters.curlOrg }}/${{ parameters.curlOrgProject }}/_apis/pipelines?api-version=6.1-preview.1"
+
+trigger: none
+
+stages:
+    - stage: Pipelines_Migration
+      displayName: Pipelines Migration
+      jobs:
+        - job: Migrate_Pipeline
+          displayName: Migrate Pipeline
+          pool:
+            vmImage: windows-latest
+          steps:
+            #Curling Pipeline
+            - task: Bash@3
+              name: curling_pipeline
+              displayName: Curling Pipeline
+              inputs:
+                targetType: 'inline'
+                script: |
+                  curl  \
+                    --user '':'${{ parameters.curlUserPAT }}' \
+                    --header "Content-Type: application/json" \
+                    --header "Accept:application/json" ${{ variables.curlheaderURL }} \
+                    --data \
+                  '{
+                    "folder": ${{ parameters.curlPipeFolder }},
+                    "name": "${{ parameters.curlPipeName }}",
+                    "configuration": {
+                      "type": "yaml",
+                      "path": "${{ parameters.curlPipePath }}",
+                      "repository": {
+                        "id": "${{ parameters.curlPipePathRepoId }}",
+                        "name": "${{ parameters.curlPipePathRepoName }}",
+                        "type": "${{ parameters.curlPipePathRepoType }}"
+                      }
+                    }
+                  }'
