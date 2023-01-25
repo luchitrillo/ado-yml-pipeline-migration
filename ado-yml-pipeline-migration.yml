@@ -7,12 +7,12 @@ parameters:
   - name: curlOrg
     displayName: ADO destiny organization name
     type: string
-    default: TaxCollection
+    default: DestinyOrganization
 
   - name: curlOrgProject
     displayName: ADO target project name
     type: string
-    default: POCClonandGO
+    default: CloneAndGo2
 
   - name: curlPipeFolder
     displayName: Pipeline target folder name (use "null" for root folder)
@@ -22,22 +22,22 @@ parameters:
   - name: curlPipeName
     displayName: Pipeline target name
     type: string
-    default: pipeline-mig-poc
+    default: CloneAndGo2
 
   - name: curlPipePath
     displayName: Pipeline target source YAML file path
     type: string
-    default: /Create-SQLServer.yml
+    default: /SourcePipelineFilePath.yml
 
   - name: curlPipePathRepoId
     displayName: Pipeline target source repository ID
     type: string
-    default: afac0d26-7f7c-43eb-9f9b-c306a42315a9
+    default: TargetPipelineRepositoryID
 
   - name: curlPipePathRepoName
     displayName: Pipeline target source repository name
     type: string
-    default: POCClonandGO
+    default: TargetPipelineRepositoryName
 
   - name: curlPipePathRepoType
     displayName: Pipeline target source Type
